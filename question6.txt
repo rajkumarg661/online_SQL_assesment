@@ -1,0 +1,11 @@
+SELECT
+    company_name,
+    CASE
+        WHEN COUNT(*) % 2 = 0 THEN
+            (PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY salary) + 
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY salary) OVER (PARTITION BY company_name)) / 2
+        ELSE
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY salary) OVER (PARTITION BY company_name)
+    END AS median_salary
+FROM employees
+GROUP BY company_name;
